@@ -3,9 +3,21 @@ import { db } from "../firebase"; // keep your Firebase setup
 import { collection, getDocs } from "firebase/firestore";
 import { Link } from "react-router-dom";
 
+import Video from "../components/Video";
+
 function Watch() {
   const [videos, setVideos] = useState([]);
   const [sortOrder, setSortOrder] = useState("newest");
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  // Reset visible count when sort order changes
+  useEffect(() => {
+    setVisibleCount(8);
+  }, [sortOrder]);
+
+  const handleExpand = () => {
+    setVisibleCount(prev => prev + 8);
+  };
   const API_KEY = "AIzaSyCfHvbB77fiQfJXf86mdNVdXRuLufYkYkU"; // 🔑 replace with your YouTube Data API v3 key
   const UPLOADS_PLAYLIST_ID = "UUMu1h2vTKPOgWY9YUY--F_Q";
 
@@ -34,7 +46,7 @@ function Watch() {
     const fetchVideos = async () => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${UPLOADS_PLAYLIST_ID}&maxResults=10&key=${API_KEY}`
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${UPLOADS_PLAYLIST_ID}&maxResults=200&key=${API_KEY}`
         );
         const data = await response.json();
         if (data.items) {
@@ -76,6 +88,10 @@ function Watch() {
     }
   });
 
+  // Get only the visible videos
+  const visibleVideos = sortedVideos.slice(0, visibleCount);
+  const hasMoreVideos = sortedVideos.length > visibleCount;
+
   return (
     <div style={{ textAlign: "center", marginTop: "3rem" }}>
       <Link to="/">Back to home</Link>
@@ -112,29 +128,40 @@ function Watch() {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "1.5rem",
+          gap: "4rem",
           marginTop: "1.5rem",
         }}
       >
         {sortedVideos.length > 0 ? (
-          sortedVideos.map((video) => (
-            console.log(video),
-            <iframe
-              key={video.snippet.resourceId.videoId}
-              width="560"
-              height="315"
-              src={`https://www.youtube.com/embed/${video.snippet.resourceId.videoId}`}
-              title={video.snippet.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
+          visibleVideos.map((video) => (
+            <Video key={video.snippet.resourceId.videoId} video={video} />
           ))
         ) : (
           <p>Loading latest videos...</p>
         )}
       </div>
+
+      {hasMoreVideos && (
+        <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <button
+            onClick={handleExpand}
+            style={{
+              padding: "0.75rem 2rem",
+              fontSize: "1rem",
+              fontFamily: "inherit",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+              transition: "background-color 0.2s"
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = "#f5f5f5"}
+            onMouseLeave={(e) => e.target.style.backgroundColor = "#fff"}
+          >
+            Expand
+          </button>
+        </div>
+      )}
     </div>
   );
 }
