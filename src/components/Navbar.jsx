@@ -15,6 +15,9 @@ const Navbar = () => {
           <li>
             <Link to="/Watch">Watch</Link>
           </li>
+          <li>
+            <Link to="/About">About</Link>
+          </li>
         </u1>
       </nav>
     </div>
