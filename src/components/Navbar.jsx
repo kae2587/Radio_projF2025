@@ -10,9 +10,6 @@ const Navbar = () => {
         </Link>
         <u1 className="navOptions">
           <li>
-            <Link to="/Explore">Explore</Link>
-          </li>
-          <li>
             <Link to="/Watch">Watch</Link>
           </li>
           <li>
