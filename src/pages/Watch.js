@@ -94,7 +94,7 @@ function Watch() {
 
   return (
     <div style={{ textAlign: "center", marginTop: "3rem" }}>
-      <Link to="/">Back to home</Link>
+    
 
       <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem" }}>
         <h2 style={{ margin: 0 }}>Featured YouTube Videos</h2>
