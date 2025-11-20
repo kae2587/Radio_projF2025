@@ -6,7 +6,7 @@ function Video({ video }) {
             border: "1px solid #ddd",
             borderRadius: "8px",
             padding: "1rem",
-            backgroundColor: "#fff"
+            background: "linear-gradient(to bottom, #FEE7FF, #6D9EEA)"
         }}>
             <iframe
                 width="560"
